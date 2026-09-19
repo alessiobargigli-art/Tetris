@@ -54,6 +54,27 @@ test('hardDrop: blocca il pezzo sul fondo, assegna 2 punti a cella e spawna il s
   assert.ok(g.board[ROWS - 1].some(Boolean));
 });
 
+test('scoreMultiplier: raddoppia esattamente il punteggio a parità di azioni (hard drop)', () => {
+  function playHardDrop(scoreMultiplier) {
+    const g = new Game({ rng: seeded(1), scoreMultiplier });
+    g.hardDrop();
+    return g.score;
+  }
+  assert.equal(playHardDrop(2), playHardDrop(1) * 2);
+});
+
+test('scoreMultiplier: raddoppia esattamente il punteggio a parità di azioni (linea)', () => {
+  function playLineClear(scoreMultiplier) {
+    const g = new Game({ rng: seeded(1), scoreMultiplier });
+    g.board[ROWS - 1] = Array(COLS).fill('Z');
+    for (const c of [3, 4, 5, 6]) g.board[ROWS - 1][c] = null;
+    g.piece = { type: 'I', rot: 0, x: 3, y: 1 };
+    g.hardDrop();
+    return g.score;
+  }
+  assert.equal(playLineClear(2), playLineClear(1) * 2);
+});
+
 test('linea singola: 100 punti x livello e la riga sparisce', () => {
   const g = newGame();
   g.board[ROWS - 1] = Array(COLS).fill('Z');
