@@ -39,7 +39,7 @@ Il motore e la logica della classifica sono separati dal DOM/Cloudflare, quindi 
 Il gioco si apre sul **menu principale** con tre voci:
 
 - **Nuova partita** — avvia subito una partita.
-- **Impostazioni** — volume/mute della musica. "Indietro" torna al menu.
+- **Impostazioni** — volume/mute della musica e difficoltà iniziale (livello 1-10, si applica alla prossima "Nuova partita"; una partita già in corso non cambia). "Indietro" torna al menu.
 - **Record** — classifica online con i migliori punteggi (vedi sotto). "Indietro" torna al menu.
 
 Durante la partita, **P** o **Esc** aprono il **menu di pausa**:

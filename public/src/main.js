@@ -9,7 +9,10 @@ const BEST_KEY = 'tetris.best';
 const VOLUME_KEY = 'tetris.musicVolume';
 const MUTED_KEY = 'tetris.musicMuted';
 const NAME_KEY = 'tetris.playerName';
+const START_LEVEL_KEY = 'tetris.startLevel';
 const DEFAULT_VOLUME = 20; // percentuale, volume basso per non coprire gli effetti
+const MIN_START_LEVEL = 1;
+const MAX_START_LEVEL = 10;
 const LEADERBOARD_URL = '/api/leaderboard';
 
 // schermate mostrate prima/senza una partita attiva: il pezzo non va disegnato
@@ -53,6 +56,14 @@ function loadMuted() {
 function loadName() {
   try { return localStorage.getItem(NAME_KEY) ?? ''; } catch { return ''; }
 }
+function loadStartLevel() {
+  try {
+    const raw = localStorage.getItem(START_LEVEL_KEY);
+    if (raw === null) return MIN_START_LEVEL;
+    const v = Number(raw);
+    return Number.isInteger(v) && v >= MIN_START_LEVEL && v <= MAX_START_LEVEL ? v : MIN_START_LEVEL;
+  } catch { return MIN_START_LEVEL; }
+}
 function saveSetting(key, v) {
   try { localStorage.setItem(key, String(v)); } catch { /* storage non disponibile */ }
 }
@@ -88,6 +99,13 @@ muteBtn.addEventListener('click', () => {
   bgm.muted = !bgm.muted;
   saveSetting(MUTED_KEY, bgm.muted ? '1' : '0');
   updateMuteBtn();
+});
+
+// ---------- difficoltà iniziale ----------
+const startLevelSelect = $('start-level');
+startLevelSelect.value = String(loadStartLevel());
+startLevelSelect.addEventListener('change', () => {
+  saveSetting(START_LEVEL_KEY, startLevelSelect.value);
 });
 
 // il primo play() avviene dentro un gesto utente (click su "Nuova partita"),
@@ -207,6 +225,7 @@ function openLeaderboard() {
   loadLeaderboard();
 }
 function startGame() {
+  game.startLevel = Number(startLevelSelect.value) || MIN_START_LEVEL;
   game.reset();
   mode = 'playing';
   releaseAll();
