@@ -1,4 +1,4 @@
-import { COLS, VISIBLE_ROWS, HIDDEN_ROWS, SHAPES, pieceCells } from './engine.js';
+import { COLS, HIDDEN_ROWS, SHAPES, pieceCells } from './engine.js';
 
 export const COLORS = {
   I: '#4fd1ff',
@@ -11,7 +11,6 @@ export const COLORS = {
 };
 
 const BOARD_BG = '#0e1126';
-const GRID = 'rgba(120, 135, 220, 0.09)';
 const FLASH_MS = 220;
 const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
 
@@ -114,19 +113,6 @@ export class Renderer {
     ctx.clearRect(0, 0, w, h);
     ctx.fillStyle = BOARD_BG;
     ctx.fillRect(0, 0, w, h);
-
-    ctx.strokeStyle = GRID;
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    for (let c = 1; c < COLS; c++) {
-      ctx.moveTo(Math.round(c * cell) + 0.5, 0);
-      ctx.lineTo(Math.round(c * cell) + 0.5, h);
-    }
-    for (let r = 1; r < VISIBLE_ROWS; r++) {
-      ctx.moveTo(0, Math.round(r * cell) + 0.5);
-      ctx.lineTo(w, Math.round(r * cell) + 0.5);
-    }
-    ctx.stroke();
 
     for (let r = HIDDEN_ROWS; r < game.board.length; r++) {
       for (let c = 0; c < COLS; c++) {
