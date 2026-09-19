@@ -24,21 +24,62 @@
           <div><dt>Record</dt><dd id="best">0</dd></div>
         </dl>
       </section>
-      <section class="panel">
-        <h2>Musica</h2>
-        <div class="audio-controls">
-          <button id="mute-btn" class="icon-btn" type="button" aria-label="Attiva/disattiva musica" aria-pressed="false">🔊</button>
-          <input id="volume" class="volume-slider" type="range" min="0" max="100" value="20" aria-label="Volume musica">
-        </div>
-      </section>
     </aside>
 
     <div class="board-wrap">
       <canvas id="board" aria-label="Campo di gioco"></canvas>
       <div id="overlay" class="overlay" aria-live="polite">
-        <p id="overlay-title" class="overlay-title">Tetris</p>
-        <p id="overlay-text" class="overlay-text"></p>
-        <button id="overlay-btn" class="primary" type="button">Gioca</button>
+
+        <div id="screen-menu" class="menu-screen">
+          <p class="overlay-title">Tetris</p>
+          <nav class="menu-list">
+            <button type="button" class="menu-btn primary" data-menu="play">Nuova partita</button>
+            <button type="button" class="menu-btn" data-menu="settings">Impostazioni</button>
+            <button type="button" class="menu-btn" data-menu="leaderboard">Record</button>
+          </nav>
+        </div>
+
+        <div id="screen-settings" class="menu-screen" hidden>
+          <p class="overlay-title">Impostazioni</p>
+          <div class="setting-row">
+            <span class="setting-label">Musica</span>
+            <div class="audio-controls">
+              <button id="mute-btn" class="icon-btn" type="button" aria-label="Attiva/disattiva musica" aria-pressed="false">🔊</button>
+              <input id="volume" class="volume-slider" type="range" min="0" max="100" value="20" aria-label="Volume musica">
+            </div>
+          </div>
+          <button type="button" class="menu-btn back" data-menu="back">Indietro</button>
+        </div>
+
+        <div id="screen-leaderboard" class="menu-screen" hidden>
+          <p class="overlay-title">Record</p>
+          <ol id="leaderboard-list" class="leaderboard-list"><li class="leaderboard-empty">Caricamento…</li></ol>
+          <button type="button" class="menu-btn back" data-menu="back">Indietro</button>
+        </div>
+
+        <div id="screen-pause" class="menu-screen" hidden>
+          <p class="overlay-title">Pausa</p>
+          <nav class="menu-list">
+            <button type="button" class="menu-btn primary" data-menu="resume">Continua</button>
+            <button type="button" class="menu-btn" data-menu="quit">Menu principale</button>
+          </nav>
+        </div>
+
+        <div id="screen-gameover" class="menu-screen" hidden>
+          <p class="overlay-title">Game over</p>
+          <p id="gameover-text" class="overlay-text"></p>
+          <form id="score-form" class="score-form">
+            <label class="sr-only" for="player-name">Il tuo nome</label>
+            <input id="player-name" type="text" maxlength="16" placeholder="Nome" autocomplete="off">
+            <button type="submit" class="menu-btn primary">Salva punteggio</button>
+          </form>
+          <p id="score-status" class="score-status" aria-live="polite"></p>
+          <nav class="menu-list">
+            <button type="button" class="menu-btn" data-menu="play">Rigioca</button>
+            <button type="button" class="menu-btn" data-menu="quit">Menu principale</button>
+          </nav>
+        </div>
+
       </div>
     </div>
 

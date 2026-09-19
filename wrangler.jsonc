@@ -2,7 +2,19 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "tetris",
   "compatibility_date": "2026-09-01",
+  "main": "worker/index.js",
   "assets": {
-    "directory": "./public"
-  }
+    "directory": "./public",
+    "binding": "ASSETS"
+  },
+  "kv_namespaces": [
+    {
+      "binding": "LEADERBOARD",
+      // Placeholder: prima del deploy in produzione crea il namespace reale con
+      // `npx wrangler kv namespace create LEADERBOARD` e sostituisci questo id
+      // (vedi README, sezione "Classifica online: setup"). In sviluppo locale
+      // `wrangler dev` funziona comunque, usando uno stato KV solo locale.
+      "id": "REPLACE_WITH_KV_NAMESPACE_ID"
+    }
+  ]
 }
