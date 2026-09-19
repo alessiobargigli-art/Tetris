@@ -1,0 +1,11 @@
+{
+  "name": "tetris",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Tetris nel browser, hosting statico su Cloudflare",
+  "scripts": {
+    "test": "node --test \"test/*.test.mjs\"",
+    "dev": "npx wrangler dev"
+  }
+}
