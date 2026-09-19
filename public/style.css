@@ -67,6 +67,29 @@ h2 {
 .help dt { font-weight: 600; }
 .help dd { margin: 0; color: var(--muted); text-align: right; }
 
+.audio-controls { display: flex; align-items: center; gap: 10px; }
+
+.icon-btn {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--panel-line);
+  border-radius: 10px;
+  background: var(--ink);
+  color: var(--text);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.icon-btn:hover { filter: brightness(1.2); }
+
+.volume-slider {
+  flex: 1;
+  min-width: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
 .board-wrap {
   position: relative;
   width: calc(var(--cell) * 10);

@@ -9,10 +9,12 @@ public/            # tutto ciò che viene pubblicato
   index.html
   style.css
   _headers         # header di sicurezza (CSP, nosniff, ...)
+  audio/
+    bitwise-adventure.mp3  # musica di sottofondo
   src/
     engine.js      # logica di gioco pura (nessun DOM)
     render.js      # rendering su canvas
-    main.js        # input, game loop, overlay
+    main.js        # input, game loop, overlay, audio
 test/
   engine.test.mjs  # test del motore (node:test)
 wrangler.jsonc     # config per deploy con Wrangler
@@ -27,6 +29,7 @@ Il motore è separato dal rendering, quindi si testa da Node senza browser.
 - Punteggio: 100 / 300 / 500 / 800 per 1-4 linee × livello, +1 per cella di soft drop, +2 per cella di hard drop
 - Livello +1 ogni 10 linee, gravità con curva Tetris Guideline
 - Record salvato in `localStorage`
+- Musica di sottofondo in loop a volume basso, con pulsante mute e slider volume (preferenze salvate in `localStorage`); parte al primo "Gioca" per rispettare le policy di autoplay del browser
 
 ## Comandi
 

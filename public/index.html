@@ -24,6 +24,13 @@
           <div><dt>Record</dt><dd id="best">0</dd></div>
         </dl>
       </section>
+      <section class="panel">
+        <h2>Musica</h2>
+        <div class="audio-controls">
+          <button id="mute-btn" class="icon-btn" type="button" aria-label="Attiva/disattiva musica" aria-pressed="false">🔊</button>
+          <input id="volume" class="volume-slider" type="range" min="0" max="100" value="20" aria-label="Volume musica">
+        </div>
+      </section>
     </aside>
 
     <div class="board-wrap">
@@ -65,6 +72,7 @@
     <button type="button" data-action="hold" aria-label="Hold">Hold</button>
   </nav>
 
+  <audio id="bgm" src="audio/bitwise-adventure.mp3" loop preload="auto"></audio>
   <script type="module" src="src/main.js"></script>
 </body>
 </html>

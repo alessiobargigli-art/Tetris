@@ -6,6 +6,9 @@ const $ = (id) => document.getElementById(id);
 const DAS = 140; // ms prima dell'auto-repeat
 const ARR = 35; // ms tra uno spostamento e l'altro
 const BEST_KEY = 'tetris.best';
+const VOLUME_KEY = 'tetris.musicVolume';
+const MUTED_KEY = 'tetris.musicMuted';
+const DEFAULT_VOLUME = 20; // percentuale, volume basso per non coprire gli effetti
 
 let mode = 'ready'; // ready | playing | paused | over
 let best = loadBest();
@@ -23,6 +26,67 @@ function loadBest() {
 }
 function saveBest(v) {
   try { localStorage.setItem(BEST_KEY, String(v)); } catch { /* storage non disponibile */ }
+}
+function loadVolume() {
+  try {
+    const raw = localStorage.getItem(VOLUME_KEY);
+    if (raw === null) return DEFAULT_VOLUME;
+    const v = Number(raw);
+    return Number.isFinite(v) && v >= 0 && v <= 100 ? v : DEFAULT_VOLUME;
+  } catch { return DEFAULT_VOLUME; }
+}
+function loadMuted() {
+  try { return localStorage.getItem(MUTED_KEY) === '1'; } catch { return false; }
+}
+function saveSetting(key, v) {
+  try { localStorage.setItem(key, String(v)); } catch { /* storage non disponibile */ }
+}
+
+// ---------- musica di sottofondo ----------
+const bgm = $('bgm');
+const muteBtn = $('mute-btn');
+const volumeSlider = $('volume');
+let musicStarted = false;
+
+function updateMuteBtn() {
+  const silent = bgm.muted || bgm.volume === 0;
+  muteBtn.textContent = silent ? '🔇' : '🔊';
+  muteBtn.setAttribute('aria-pressed', String(bgm.muted));
+}
+
+volumeSlider.value = String(loadVolume());
+bgm.volume = Number(volumeSlider.value) / 100;
+bgm.muted = loadMuted();
+updateMuteBtn();
+
+volumeSlider.addEventListener('input', () => {
+  bgm.volume = Number(volumeSlider.value) / 100;
+  saveSetting(VOLUME_KEY, volumeSlider.value);
+  if (bgm.volume > 0 && bgm.muted) {
+    bgm.muted = false;
+    saveSetting(MUTED_KEY, '0');
+  }
+  updateMuteBtn();
+});
+
+muteBtn.addEventListener('click', () => {
+  bgm.muted = !bgm.muted;
+  saveSetting(MUTED_KEY, bgm.muted ? '1' : '0');
+  updateMuteBtn();
+});
+
+// il primo play() avviene dentro un gesto utente (click/tasto "Gioca"),
+// come richiesto dalle policy di autoplay dei browser
+function startMusic() {
+  if (musicStarted) return;
+  musicStarted = true;
+  bgm.play().catch(() => { musicStarted = false; });
+}
+function resumeMusic() {
+  if (musicStarted) bgm.play().catch(() => {});
+}
+function pauseMusic() {
+  bgm.pause();
 }
 
 // ---------- eventi del motore ----------
@@ -55,6 +119,7 @@ function start() {
   mode = 'playing';
   releaseAll();
   hideOverlay();
+  startMusic();
 }
 function pause() {
   if (mode !== 'playing') return;
@@ -62,12 +127,14 @@ function pause() {
   game.paused = true;
   releaseAll();
   showOverlay('In pausa', 'Il gioco è fermo.', 'Riprendi');
+  pauseMusic();
 }
 function resume() {
   if (mode !== 'paused') return;
   mode = 'playing';
   game.paused = false;
   hideOverlay();
+  resumeMusic();
 }
 function primaryAction() {
   if (mode === 'paused') resume();
