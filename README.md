@@ -75,20 +75,20 @@ Se in futuro serve una classifica "seria" (anti-cheat reale, storicizzazione, ra
 
 **Sviluppo locale** — funziona subito, senza account Cloudflare: `npx wrangler dev` avvia il Worker con una copia locale del KV (dati non condivisi con la produzione).
 
-**Deploy in produzione** — il file `wrangler.jsonc` contiene un id KV segnaposto (`REPLACE_WITH_KV_NAMESPACE_ID`). Prima del primo deploy:
+**Deploy in produzione** — il KV namespace `TetrisLeaderboard` è già creato e il suo id è già in `wrangler.jsonc`, quindi basta:
 
 ```bash
 npx wrangler login
-npx wrangler kv namespace create LEADERBOARD
-```
-
-Il comando stampa un `id`: incollalo in `wrangler.jsonc` al posto del segnaposto, poi:
-
-```bash
 npx wrangler deploy
 ```
 
-Se deployi collegando il repo GitHub da dashboard (vedi sotto), aggiorna comunque `wrangler.jsonc` con l'id reale **prima** di collegare/pushare, altrimenti il primo deploy fallirà o resterà senza classifica funzionante.
+Se in futuro serve ricreare il namespace (es. altro account Cloudflare, o un fork del progetto):
+
+```bash
+npx wrangler kv namespace create LEADERBOARD
+```
+
+Il comando stampa un `id`: va incollato in `wrangler.jsonc` al posto di quello esistente, prima del deploy.
 
 ## Comandi
 
@@ -115,7 +115,7 @@ npx wrangler dev   # server locale: asset statici + Worker (API classifica inclu
 
 ## Deploy su Cloudflare (piano free)
 
-Prima di tutto, crea il KV namespace e aggiorna `wrangler.jsonc` come descritto sopra in "Classifica online: setup".
+Il KV namespace è già configurato in `wrangler.jsonc` (vedi "Classifica online: setup" sopra).
 
 **Opzione A: collegando il repo GitHub (deploy automatico a ogni push)**
 

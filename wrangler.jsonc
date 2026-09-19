@@ -10,11 +10,7 @@
   "kv_namespaces": [
     {
       "binding": "LEADERBOARD",
-      // Placeholder: prima del deploy in produzione crea il namespace reale con
-      // `npx wrangler kv namespace create LEADERBOARD` e sostituisci questo id
-      // (vedi README, sezione "Classifica online: setup"). In sviluppo locale
-      // `wrangler dev` funziona comunque, usando uno stato KV solo locale.
-      "id": "REPLACE_WITH_KV_NAMESPACE_ID"
+      "id": "809e8bf9cf0748718861d241c1ea6eac"
     }
   ]
 }
