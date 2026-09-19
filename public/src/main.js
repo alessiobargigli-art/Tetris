@@ -8,16 +8,31 @@ const ARR = 35; // ms tra uno spostamento e l'altro
 const BEST_KEY = 'tetris.best';
 const VOLUME_KEY = 'tetris.musicVolume';
 const MUTED_KEY = 'tetris.musicMuted';
+const NAME_KEY = 'tetris.playerName';
+const START_LEVEL_KEY = 'tetris.startLevel';
 const DEFAULT_VOLUME = 20; // percentuale, volume basso per non coprire gli effetti
+const MIN_START_LEVEL = 1;
+const MAX_START_LEVEL = 10;
+const LEADERBOARD_URL = '/api/leaderboard';
 
-let mode = 'ready'; // ready | playing | paused | over
+// schermate mostrate prima/senza una partita attiva: il pezzo non va disegnato
+const MENU_MODES = new Set(['menu', 'settings', 'leaderboard']);
+
+let mode = 'menu'; // menu | settings | leaderboard | playing | paused | gameover
 let best = loadBest();
 
 const game = new Game({ onEvent });
 const renderer = new Renderer({ board: $('board'), hold: $('hold'), next: $('next') });
 
 const hud = { score: $('score'), level: $('level'), lines: $('lines'), best: $('best') };
-const overlay = { root: $('overlay'), title: $('overlay-title'), text: $('overlay-text'), btn: $('overlay-btn') };
+const overlayRoot = $('overlay');
+const screens = {
+  menu: $('screen-menu'),
+  settings: $('screen-settings'),
+  leaderboard: $('screen-leaderboard'),
+  paused: $('screen-pause'),
+  gameover: $('screen-gameover'),
+};
 let shown = {};
 
 // ---------- storage ----------
@@ -37,6 +52,17 @@ function loadVolume() {
 }
 function loadMuted() {
   try { return localStorage.getItem(MUTED_KEY) === '1'; } catch { return false; }
+}
+function loadName() {
+  try { return localStorage.getItem(NAME_KEY) ?? ''; } catch { return ''; }
+}
+function loadStartLevel() {
+  try {
+    const raw = localStorage.getItem(START_LEVEL_KEY);
+    if (raw === null) return MIN_START_LEVEL;
+    const v = Number(raw);
+    return Number.isInteger(v) && v >= MIN_START_LEVEL && v <= MAX_START_LEVEL ? v : MIN_START_LEVEL;
+  } catch { return MIN_START_LEVEL; }
 }
 function saveSetting(key, v) {
   try { localStorage.setItem(key, String(v)); } catch { /* storage non disponibile */ }
@@ -75,7 +101,14 @@ muteBtn.addEventListener('click', () => {
   updateMuteBtn();
 });
 
-// il primo play() avviene dentro un gesto utente (click/tasto "Gioca"),
+// ---------- difficoltà iniziale ----------
+const startLevelSelect = $('start-level');
+startLevelSelect.value = String(loadStartLevel());
+startLevelSelect.addEventListener('change', () => {
+  saveSetting(START_LEVEL_KEY, startLevelSelect.value);
+});
+
+// il primo play() avviene dentro un gesto utente (click su "Nuova partita"),
 // come richiesto dalle policy di autoplay dei browser
 function startMusic() {
   if (musicStarted) return;
@@ -89,59 +122,143 @@ function pauseMusic() {
   bgm.pause();
 }
 
+// ---------- classifica online ----------
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, (c) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+  }[c]));
+}
+
+function renderLeaderboard(entries) {
+  const list = $('leaderboard-list');
+  if (!entries || entries.length === 0) {
+    list.innerHTML = '<li class="leaderboard-empty">Nessun punteggio ancora. Sii il primo!</li>';
+    return;
+  }
+  list.innerHTML = entries.map((e, i) => `
+    <li>
+      <span class="rank">${i + 1}</span>
+      <span class="name">${escapeHtml(e.name)}</span>
+      <span class="score">${Number(e.score).toLocaleString('it-IT')}</span>
+    </li>
+  `).join('');
+}
+
+async function loadLeaderboard() {
+  const list = $('leaderboard-list');
+  list.innerHTML = '<li class="leaderboard-empty">Caricamento…</li>';
+  try {
+    const res = await fetch(LEADERBOARD_URL);
+    if (!res.ok) throw new Error(`status ${res.status}`);
+    const { entries } = await res.json();
+    renderLeaderboard(entries);
+  } catch {
+    list.innerHTML = '<li class="leaderboard-empty">Classifica non disponibile al momento.</li>';
+  }
+}
+
+async function submitScore(name, score, lines, level) {
+  const res = await fetch(LEADERBOARD_URL, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ name, score, lines, level }),
+  });
+  if (!res.ok) throw new Error(`status ${res.status}`);
+  return res.json();
+}
+
+$('score-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const name = $('player-name').value.trim() || 'Anonimo';
+  saveSetting(NAME_KEY, name);
+  const btn = e.currentTarget.querySelector('button[type="submit"]');
+  const status = $('score-status');
+  btn.disabled = true;
+  status.textContent = 'Invio…';
+  try {
+    await submitScore(name, game.score, game.lines, game.level);
+    status.textContent = 'Punteggio salvato!';
+  } catch {
+    status.textContent = 'Impossibile salvare il punteggio. Riprova più tardi.';
+    btn.disabled = false;
+  }
+});
+
 // ---------- eventi del motore ----------
 function onEvent(type, data) {
   if (type === 'clear') renderer.flash(data.rows);
   if (type === 'gameover') {
     if (game.score > best) { best = game.score; saveBest(best); }
-    mode = 'over';
+    mode = 'gameover';
     releaseAll();
-    showOverlay('Game over', `Punteggio ${game.score.toLocaleString('it-IT')} · ${game.lines} linee`, 'Riprova');
+    $('gameover-text').textContent = `Punteggio ${game.score.toLocaleString('it-IT')} · ${game.lines} linee`;
+    $('player-name').value = loadName();
+    $('score-status').textContent = '';
+    $('score-form').querySelector('button[type="submit"]').disabled = false;
+    showScreen('gameover');
   }
 }
 
-// ---------- overlay ----------
-function showOverlay(title, text, btn) {
-  overlay.title.textContent = title;
-  overlay.text.textContent = text;
-  overlay.btn.textContent = btn;
-  overlay.root.hidden = false;
-  overlay.btn.focus({ preventScroll: true });
+// ---------- schermate overlay ----------
+function showScreen(name) {
+  overlayRoot.hidden = false;
+  for (const [key, el] of Object.entries(screens)) el.hidden = key !== name;
+  screens[name].querySelector('button, input')?.focus({ preventScroll: true });
 }
 function hideOverlay() {
-  overlay.root.hidden = true;
-  overlay.btn.blur();
+  overlayRoot.hidden = true;
 }
 
-// ---------- stato ----------
-function start() {
+// ---------- stato / navigazione ----------
+function openMenu() {
+  mode = 'menu';
+  releaseAll();
+  showScreen('menu');
+}
+function openSettings() {
+  mode = 'settings';
+  showScreen('settings');
+}
+function openLeaderboard() {
+  mode = 'leaderboard';
+  showScreen('leaderboard');
+  loadLeaderboard();
+}
+function startGame() {
+  game.startLevel = Number(startLevelSelect.value) || MIN_START_LEVEL;
   game.reset();
   mode = 'playing';
   releaseAll();
   hideOverlay();
   startMusic();
 }
-function pause() {
+function pauseGame() {
   if (mode !== 'playing') return;
   mode = 'paused';
   game.paused = true;
   releaseAll();
-  showOverlay('In pausa', 'Il gioco è fermo.', 'Riprendi');
+  showScreen('paused');
   pauseMusic();
 }
-function resume() {
+function resumeGame() {
   if (mode !== 'paused') return;
   mode = 'playing';
   game.paused = false;
   hideOverlay();
   resumeMusic();
 }
-function primaryAction() {
-  if (mode === 'paused') resume();
-  else if (mode === 'ready' || mode === 'over') start();
-}
 
-overlay.btn.addEventListener('click', primaryAction);
+overlayRoot.addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-menu]');
+  if (!btn) return;
+  const action = btn.dataset.menu;
+  if (action === 'play') startGame();
+  else if (action === 'settings') openSettings();
+  else if (action === 'leaderboard') openLeaderboard();
+  else if (action === 'back') openMenu();
+  else if (action === 'resume') resumeGame();
+  else if (action === 'quit') openMenu();
+});
 
 // ---------- input: auto-repeat laterale ----------
 const held = []; // stack delle direzioni premute (l'ultima vince)
@@ -213,21 +330,17 @@ const KEYMAP = {
 
 window.addEventListener('keydown', (e) => {
   if (e.metaKey || e.ctrlKey || e.altKey) return;
-  const isButton = e.target instanceof HTMLButtonElement;
 
   if (e.code === 'KeyP' || e.code === 'Escape') {
     e.preventDefault();
     if (e.repeat) return;
-    if (mode === 'playing') pause();
-    else if (mode === 'paused') resume();
+    if (mode === 'playing') pauseGame();
+    else if (mode === 'paused') resumeGame();
     return;
   }
-  if (e.code === 'Enter' || (e.code === 'Space' && mode !== 'playing')) {
-    if (isButton) return; // il click sul bottone gestisce già l'azione
-    e.preventDefault();
-    if (!e.repeat) primaryAction();
-    return;
-  }
+  // durante i menu i tasti di gioco non intercettano nulla: frecce/spazio/tab
+  // restano liberi per la navigazione nativa tra i pulsanti
+  if (mode !== 'playing') return;
   const name = KEYMAP[e.code];
   if (!name) return;
   e.preventDefault();
@@ -259,7 +372,7 @@ document.querySelectorAll('[data-action]').forEach((btn) => {
 
 // pausa automatica quando la scheda perde il focus
 document.addEventListener('visibilitychange', () => {
-  if (document.hidden) pause();
+  if (document.hidden) pauseGame();
 });
 window.addEventListener('blur', () => releaseAll());
 
@@ -287,10 +400,10 @@ function frame(now) {
     updateInput(dt);
     game.tick(dt);
   }
-  renderer.draw(game, now, mode !== 'ready');
+  renderer.draw(game, now, !MENU_MODES.has(mode));
   updateHud();
   requestAnimationFrame(frame);
 }
 
-showOverlay('Tetris', 'Frecce per muovere, Su per ruotare, Spazio per il drop.', 'Gioca');
+showScreen('menu');
 requestAnimationFrame(frame);
