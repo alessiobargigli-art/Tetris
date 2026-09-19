@@ -33,6 +33,7 @@ Il motore e la logica della classifica sono separati dal DOM/Cloudflare, quindi 
 - Punteggio: 100 / 300 / 500 / 800 per 1-4 linee × livello, +1 per cella di soft drop, +2 per cella di hard drop
 - Livello +1 ogni 10 linee, gravità con curva Tetris Guideline
 - Musica di sottofondo in loop a volume basso, mute e slider volume in Impostazioni (preferenze salvate in `localStorage`); parte al primo "Nuova partita" per rispettare le policy di autoplay del browser
+- Sfondo generato via CSS (gradienti + texture sottile), nessuna immagine da caricare; resta dietro pannelli e board, che restano opachi
 
 ## Menu e schermate
 
