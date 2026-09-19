@@ -30,7 +30,7 @@ Il motore e la logica della classifica sono separati dal DOM/Cloudflare, quindi 
 
 - Rotazioni SRS con wall kick, 7-bag, hold (una volta per pezzo), ghost piece, next queue (4 pezzi)
 - Lock delay 500 ms con massimo 15 reset
-- Punteggio: 100 / 300 / 500 / 800 per 1-4 linee × livello, +1 per cella di soft drop, +2 per cella di hard drop
+- Punteggio: 100 / 300 / 500 / 800 per 1-4 linee × livello, +1 per cella di soft drop, +2 per cella di hard drop; +20% su tutti i punti se il ghost piece è disattivato in Impostazioni
 - Livello +1 ogni 10 linee, gravità con curva Tetris Guideline
 - Musica di sottofondo in loop a volume basso, mute e slider volume in Impostazioni (preferenze salvate in `localStorage`); parte al primo "Nuova partita" per rispettare le policy di autoplay del browser
 - Sfondo generato via CSS (gradienti + texture sottile), nessuna immagine da caricare; resta dietro pannelli e board, che restano opachi
@@ -40,7 +40,7 @@ Il motore e la logica della classifica sono separati dal DOM/Cloudflare, quindi 
 Il gioco si apre sul **menu principale** con tre voci:
 
 - **Nuova partita** — avvia subito una partita.
-- **Impostazioni** — volume/mute della musica e difficoltà iniziale (livello 1-10, si applica alla prossima "Nuova partita"; una partita già in corso non cambia). "Indietro" torna al menu.
+- **Impostazioni** — volume/mute della musica, difficoltà iniziale (livello 1-10) e visibilità del ghost piece; tutte si applicano alla prossima "Nuova partita", una partita già in corso non cambia. Disattivare il ghost piece dà un bonus di +20% su tutto il punteggio della partita. "Indietro" torna al menu.
 - **Record** — classifica online con i migliori punteggi (vedi sotto). "Indietro" torna al menu.
 
 Durante la partita, **P** o **Esc** aprono il **menu di pausa**:

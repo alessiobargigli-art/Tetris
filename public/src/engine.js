@@ -78,6 +78,7 @@ export class Game {
   constructor(opts = {}) {
     this.rng = opts.rng ?? Math.random;
     this.startLevel = opts.startLevel ?? 1;
+    this.scoreMultiplier = opts.scoreMultiplier ?? 1;
     this.onEvent = opts.onEvent ?? null;
     this.reset();
   }
@@ -155,7 +156,7 @@ export class Game {
     if (!this.active) return;
     const p = this.piece;
     const target = this.ghostY();
-    this.score += 2 * (target - p.y);
+    this._addScore(2 * (target - p.y));
     p.y = target;
     this._lock();
   }
@@ -196,7 +197,7 @@ export class Game {
     while (this.gravityAcc >= interval) {
       this.gravityAcc -= interval;
       if (!this._step()) break;
-      if (this.softDropping) this.score += 1;
+      if (this.softDropping) this._addScore(1);
     }
   }
 
@@ -282,7 +283,7 @@ export class Game {
       const keep = this.board.filter((_, r) => !fullRows.includes(r));
       const fresh = Array.from({ length: fullRows.length }, () => Array(COLS).fill(null));
       this.board = [...fresh, ...keep];
-      this.score += LINE_POINTS[fullRows.length] * this.level;
+      this._addScore(LINE_POINTS[fullRows.length] * this.level);
       this.lines += fullRows.length;
       const newLevel = Math.max(this.startLevel, Math.floor(this.lines / 10) + 1);
       this._emit('clear', { rows: fullRows.map((r) => r - HIDDEN_ROWS), count: fullRows.length });
@@ -303,6 +304,10 @@ export class Game {
     this._fillQueue();
     this._spawn(this.queue.shift());
     this._fillQueue();
+  }
+
+  _addScore(points) {
+    this.score += Math.round(points * this.scoreMultiplier);
   }
 
   _emit(type, data) {

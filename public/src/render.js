@@ -101,13 +101,13 @@ export class Renderer {
     this.flashes.push({ rows, t0: performance.now() });
   }
 
-  draw(game, now, showPiece = true) {
-    this._drawBoard(game, now, showPiece);
+  draw(game, now, showPiece = true, showGhost = true) {
+    this._drawBoard(game, now, showPiece, showGhost);
     this._drawHold(game);
     this._drawNext(game);
   }
 
-  _drawBoard(game, now, showPiece) {
+  _drawBoard(game, now, showPiece, showGhost) {
     const ctx = this.bctx;
     const { w, h } = fit(this.board);
     const cell = w / COLS;
@@ -137,10 +137,12 @@ export class Renderer {
 
     if (showPiece && game.piece && !game.over) {
       const p = game.piece;
-      const gy = game.ghostY();
-      if (gy !== p.y) {
-        for (const [x, y] of pieceCells(p.type, p.rot, p.x, gy)) {
-          if (y >= HIDDEN_ROWS) tile(ctx, x * cell, (y - HIDDEN_ROWS) * cell, cell, COLORS[p.type], true);
+      if (showGhost) {
+        const gy = game.ghostY();
+        if (gy !== p.y) {
+          for (const [x, y] of pieceCells(p.type, p.rot, p.x, gy)) {
+            if (y >= HIDDEN_ROWS) tile(ctx, x * cell, (y - HIDDEN_ROWS) * cell, cell, COLORS[p.type], true);
+          }
         }
       }
       for (const [x, y] of pieceCells(p.type, p.rot, p.x, p.y)) {

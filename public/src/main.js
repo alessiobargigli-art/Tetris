@@ -10,9 +10,11 @@ const VOLUME_KEY = 'tetris.musicVolume';
 const MUTED_KEY = 'tetris.musicMuted';
 const NAME_KEY = 'tetris.playerName';
 const START_LEVEL_KEY = 'tetris.startLevel';
+const SHOW_GHOST_KEY = 'tetris.showGhost';
 const DEFAULT_VOLUME = 20; // percentuale, volume basso per non coprire gli effetti
 const MIN_START_LEVEL = 1;
 const MAX_START_LEVEL = 10;
+const NO_GHOST_SCORE_MULTIPLIER = 1.2; // bonus punteggio se si disattiva il ghost piece
 const LEADERBOARD_URL = '/api/leaderboard';
 
 // schermate mostrate prima/senza una partita attiva: il pezzo non va disegnato
@@ -64,6 +66,12 @@ function loadStartLevel() {
     return Number.isInteger(v) && v >= MIN_START_LEVEL && v <= MAX_START_LEVEL ? v : MIN_START_LEVEL;
   } catch { return MIN_START_LEVEL; }
 }
+function loadShowGhost() {
+  try {
+    const raw = localStorage.getItem(SHOW_GHOST_KEY);
+    return raw === null ? true : raw === '1';
+  } catch { return true; }
+}
 function saveSetting(key, v) {
   try { localStorage.setItem(key, String(v)); } catch { /* storage non disponibile */ }
 }
@@ -106,6 +114,14 @@ const startLevelSelect = $('start-level');
 startLevelSelect.value = String(loadStartLevel());
 startLevelSelect.addEventListener('change', () => {
   saveSetting(START_LEVEL_KEY, startLevelSelect.value);
+});
+
+// ---------- suggerimento (ghost piece) ----------
+const showGhostCheckbox = $('show-ghost');
+showGhostCheckbox.checked = loadShowGhost();
+let ghostVisible = showGhostCheckbox.checked; // catturato all'avvio della partita, vedi startGame()
+showGhostCheckbox.addEventListener('change', () => {
+  saveSetting(SHOW_GHOST_KEY, showGhostCheckbox.checked ? '1' : '0');
 });
 
 // il primo play() avviene dentro un gesto utente (click su "Nuova partita"),
@@ -226,6 +242,8 @@ function openLeaderboard() {
 }
 function startGame() {
   game.startLevel = Number(startLevelSelect.value) || MIN_START_LEVEL;
+  ghostVisible = showGhostCheckbox.checked;
+  game.scoreMultiplier = ghostVisible ? 1 : NO_GHOST_SCORE_MULTIPLIER;
   game.reset();
   mode = 'playing';
   releaseAll();
@@ -400,7 +418,7 @@ function frame(now) {
     updateInput(dt);
     game.tick(dt);
   }
-  renderer.draw(game, now, !MENU_MODES.has(mode));
+  renderer.draw(game, now, !MENU_MODES.has(mode), ghostVisible);
   updateHud();
   requestAnimationFrame(frame);
 }
