@@ -20,6 +20,44 @@ const LEADERBOARD_URL = '/api/leaderboard';
 // schermate mostrate prima/senza una partita attiva: il pezzo non va disegnato
 const MENU_MODES = new Set(['menu', 'settings', 'leaderboard']);
 
+// ---------- logo "TETRIS" a mattoncini (menu principale) ----------
+// font a matrice di punti 5x7, un carattere per riga di stringa ('1' = mattoncino)
+const LOGO_GLYPHS = {
+  T: ['11111', '00100', '00100', '00100', '00100', '00100', '00100'],
+  E: ['11111', '10000', '10000', '11110', '10000', '10000', '11111'],
+  R: ['11110', '10001', '10001', '11110', '10100', '10010', '10001'],
+  I: ['01110', '00100', '00100', '00100', '00100', '00100', '01110'],
+  S: ['01111', '10000', '10000', '01110', '00001', '00001', '11110'],
+};
+const LOGO_WORD = ['T', 'E', 'T', 'R', 'I', 'S'];
+const LOGO_COLORS = ['#4fd1ff', '#ffd84f', '#b678ff', '#5ee08a', '#ff5d6c', '#5b7cff'];
+const LOGO_LETTER_WIDTH = 5;
+const LOGO_LETTER_GAP = 1;
+const LOGO_STAGGER_MS = 22; // sfasamento tra una colonna e l'altra, per l'effetto "cascata"
+
+function buildLogo() {
+  const el = $('tetris-logo');
+  let col = 0;
+  LOGO_WORD.forEach((letter, li) => {
+    const glyph = LOGO_GLYPHS[letter];
+    const color = LOGO_COLORS[li % LOGO_COLORS.length];
+    for (let r = 0; r < glyph.length; r++) {
+      for (let c = 0; c < LOGO_LETTER_WIDTH; c++) {
+        if (glyph[r][c] !== '1') continue;
+        const brick = document.createElement('span');
+        brick.className = 'brick';
+        brick.style.gridColumn = String(col + c + 1);
+        brick.style.gridRow = String(r + 1);
+        brick.style.setProperty('--tcolor', color);
+        brick.style.animationDelay = `${(col + c) * LOGO_STAGGER_MS}ms`;
+        el.appendChild(brick);
+      }
+    }
+    col += LOGO_LETTER_WIDTH + LOGO_LETTER_GAP;
+  });
+  el.style.setProperty('--cols', String(col - LOGO_LETTER_GAP));
+}
+
 let mode = 'menu'; // menu | settings | leaderboard | playing | paused | gameover
 let best = loadBest();
 
@@ -216,8 +254,19 @@ function onEvent(type, data) {
 }
 
 // ---------- schermate overlay ----------
+let introPlayed = false;
 function showScreen(name) {
   overlayRoot.hidden = false;
+  // il backdrop-filter su #overlay crea un containing block per i figli
+  // "position: fixed", impedendo al menu a schermo intero di coprire il
+  // viewport: lo disattiviamo solo mentre è mostrato quel menu
+  overlayRoot.classList.toggle('overlay-plain', name === 'menu');
+  if (name === 'menu') {
+    // passare da display:none a visibile fa ripartire le animazioni CSS dei
+    // figli: l'ingresso cinematografico deve giocare solo la prima volta
+    screens.menu.classList.toggle('no-intro', introPlayed);
+    introPlayed = true;
+  }
   for (const [key, el] of Object.entries(screens)) el.hidden = key !== name;
   screens[name].querySelector('button, input')?.focus({ preventScroll: true });
 }
@@ -423,5 +472,6 @@ function frame(now) {
   requestAnimationFrame(frame);
 }
 
+buildLogo();
 showScreen('menu');
 requestAnimationFrame(frame);

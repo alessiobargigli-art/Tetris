@@ -31,9 +31,11 @@
       <canvas id="board" aria-label="Campo di gioco"></canvas>
       <div id="overlay" class="overlay" aria-live="polite">
 
-        <div id="screen-menu" class="menu-screen">
-          <p class="overlay-title">Tetris</p>
-          <nav class="menu-list">
+        <div id="screen-menu" class="menu-screen menu-fullscreen">
+          <div class="logo-flash" aria-hidden="true"></div>
+          <div id="tetris-logo" class="tetris-logo" role="img" aria-label="Tetris"></div>
+          <p class="menu-subtitle">by Flax</p>
+          <nav class="menu-list menu-list-cinematic">
             <button type="button" class="menu-btn primary" data-menu="play">Nuova partita</button>
             <button type="button" class="menu-btn" data-menu="settings">Impostazioni</button>
             <button type="button" class="menu-btn" data-menu="leaderboard">Record</button>
