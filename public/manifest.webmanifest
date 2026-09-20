@@ -1,0 +1,14 @@
+{
+  "name": "Tetris by Flax",
+  "short_name": "Tetris",
+  "description": "Tetris nel browser: SRS, hold, ghost piece, classifica online.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0b0d1f",
+  "theme_color": "#0b0d1f",
+  "icons": [
+    { "src": "images/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "images/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
