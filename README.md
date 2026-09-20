@@ -35,7 +35,7 @@ Il motore e la logica della classifica sono separati dal DOM/Cloudflare, quindi 
 - Punteggio: 100 / 300 / 500 / 800 per 1-4 linee × livello, +1 per cella di soft drop, +2 per cella di hard drop; +20% su tutti i punti se il ghost piece è disattivato in Impostazioni
 - Livello +1 ogni 10 linee, gravità con curva Tetris Guideline
 - Musica di sottofondo in loop a volume basso, mute e slider volume in Impostazioni (preferenze salvate in `localStorage`); parte al primo "Nuova partita" per rispettare le policy di autoplay del browser
-- Sfondo illustrato in SVG (`public/images/bg.svg`): sagome dei sette tetramini classici e bagliori sfumati sul tema scuro/viola; resta dietro pannelli e board, che restano opachi
+- Sfondo illustrato in SVG (`public/images/bg.svg`), fitto di sagome dei sette tetramini classici sparse su tutto il canvas, bagliori sfumati e un leggero effetto scanline in stile CRT vintage; resta dietro pannelli e board, che restano opachi
 
 ## Menu e schermate
 
