@@ -9,12 +9,15 @@ public/            # tutto ciò che viene pubblicato come sito statico
   index.html        # schermate: menu, impostazioni, record, pausa, game over, board di gioco
   style.css
   _headers          # header di sicurezza (CSP, nosniff, ...) per gli asset statici
+  manifest.webmanifest  # manifest PWA (installabilità su Android/desktop)
+  sw.js             # service worker: cache dell'app shell, gioco offline
   audio/
     bitwise-adventure.mp3  # musica di sottofondo
   images/
     bg.svg          # illustrazione di sfondo (tetramini + bagliori)
     icon.svg        # favicon
-    apple-touch-icon.png  # icona per la home screen (iOS/Android), generata da icon.svg
+    icon-192.png, icon-512.png  # icone PWA (manifest), generate da icon.svg
+    apple-touch-icon.png  # icona per la home screen iOS, generata da icon.svg
   src/
     engine.js       # logica di gioco pura (nessun DOM)
     render.js       # rendering su canvas
@@ -96,6 +99,14 @@ npx wrangler kv namespace create LEADERBOARD
 ```
 
 Il comando stampa un `id`: va incollato in `wrangler.jsonc` al posto di quello esistente, prima del deploy.
+
+## Installazione come app (PWA)
+
+Il sito è una PWA installabile: `manifest.webmanifest` (nome, icone 192/512px, colori) più `sw.js` (service worker che mette in cache l'app shell) soddisfano i criteri di installabilità di Android/Chrome desktop, e permettono di rigiocare offline una volta caricata la pagina almeno una volta (la classifica online resta esclusa dalla cache, richiede sempre la rete).
+
+Da sapere:
+- Su iOS/Safari non esiste un popup automatico: si installa da Condividi → "Aggiungi alla schermata Home" (le meta tag `apple-mobile-web-app-*` e `apple-touch-icon` sono già a posto per quel percorso).
+- Su Android/Chrome il popup automatico ("Aggiungi a schermata Home") non è garantito al primo caricamento: Chrome applica un'euristica di "engagement" (a volte richiede una seconda visita o qualche decina di secondi sulla pagina) e lo sopprime se l'utente lo ha già chiuso in passato per questo sito. Se non compare da solo, il menu di Chrome (⋮) ha comunque sempre la voce "Installa app"/"Aggiungi a schermata Home" quando il sito è installabile.
 
 ## Comandi
 

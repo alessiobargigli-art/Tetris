@@ -475,3 +475,10 @@ function frame(now) {
 buildLogo();
 showScreen('menu');
 requestAnimationFrame(frame);
+
+// registra il service worker: abilita l'installazione come PWA e il replay offline
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => { /* offline/PWA non essenziale al gioco */ });
+  });
+}
