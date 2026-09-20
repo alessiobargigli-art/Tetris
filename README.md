@@ -13,6 +13,8 @@ public/            # tutto ciò che viene pubblicato come sito statico
     bitwise-adventure.mp3  # musica di sottofondo
   images/
     bg.svg          # illustrazione di sfondo (tetramini + bagliori)
+    icon.svg        # favicon
+    apple-touch-icon.png  # icona per la home screen (iOS/Android), generata da icon.svg
   src/
     engine.js       # logica di gioco pura (nessun DOM)
     render.js       # rendering su canvas
