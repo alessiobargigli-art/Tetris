@@ -13,6 +13,8 @@ public/            # tutto ciò che viene pubblicato come sito statico
     bitwise-adventure.mp3  # musica di sottofondo
   images/
     bg.svg          # illustrazione di sfondo (tetramini + bagliori)
+    icon.svg        # favicon
+    apple-touch-icon.png  # icona per la home screen (iOS/Android), generata da icon.svg
   src/
     engine.js       # logica di gioco pura (nessun DOM)
     render.js       # rendering su canvas
@@ -39,7 +41,9 @@ Il motore e la logica della classifica sono separati dal DOM/Cloudflare, quindi 
 
 ## Menu e schermate
 
-Il gioco si apre sul **menu principale** con tre voci:
+Il gioco si apre sul **menu principale a schermo intero**: il logo "TETRIS" si assembla con un'entrata cinematografica (mattoncini colorati che cadono a cascata da sinistra a destra, come tetramini, con un piccolo flash finale), sottotitolo "by Flax" e i pulsanti del menu, che compaiono in sequenza. L'animazione gioca una sola volta all'avvio; tornando al menu in seguito (da Impostazioni, Record o dalla pausa) il logo è già assemblato, senza rifare l'ingresso. Rispetta `prefers-reduced-motion`: chi lo richiede vede tutto già a posto, senza animazioni.
+
+Il menu principale ha tre voci:
 
 - **Nuova partita** — avvia subito una partita.
 - **Impostazioni** — volume/mute della musica, difficoltà iniziale (livello 1-10) e visibilità del ghost piece; tutte si applicano alla prossima "Nuova partita", una partita già in corso non cambia. Disattivare il ghost piece dà un bonus di +20% su tutto il punteggio della partita. "Indietro" torna al menu.

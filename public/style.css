@@ -115,6 +115,7 @@ h2 {
   backdrop-filter: blur(4px);
 }
 .overlay[hidden] { display: none; }
+.overlay.overlay-plain { background: none; backdrop-filter: none; }
 
 .overlay-title { margin: 0; font-size: clamp(1.6rem, 4vh, 2.4rem); font-weight: 800; letter-spacing: -0.02em; }
 .overlay-text { margin: 0; max-width: 22ch; color: var(--muted); font-size: 0.9rem; line-height: 1.4; }
@@ -320,6 +321,84 @@ button:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
   .stats dt { font-size: 0.62rem; }
   .stats dd { font-size: 0.95rem; }
   .help { display: none; }
+}
+
+/* ---- menu principale a schermo intero, con entrata cinematografica ---- */
+#screen-menu.menu-fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(16px, 4vh, 32px);
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  background: url('images/bg.svg') center / cover no-repeat, var(--ink);
+}
+#screen-menu.menu-fullscreen[hidden] { display: none; }
+
+.logo-flash {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.5), transparent 60%);
+  opacity: 0;
+  pointer-events: none;
+  animation: flashPulse 0.5s ease-out 1.3s both;
+}
+@keyframes flashPulse {
+  0% { opacity: 0; }
+  30% { opacity: 0.8; }
+  100% { opacity: 0; }
+}
+
+.tetris-logo {
+  --brick: clamp(6px, calc((100vw - 64px) / 36), 20px);
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 35), var(--brick));
+  grid-template-rows: repeat(7, var(--brick));
+  gap: calc(var(--brick) * 0.14);
+}
+
+.brick {
+  width: var(--brick);
+  height: var(--brick);
+  border-radius: 22%;
+  background: var(--tcolor);
+  box-shadow:
+    inset 0 calc(var(--brick) * 0.18) 0 rgba(255, 255, 255, 0.35),
+    inset 0 calc(var(--brick) * -0.18) 0 rgba(0, 0, 0, 0.25);
+  animation: brickFall 0.6s cubic-bezier(0.2, 0.8, 0.25, 1) both;
+}
+@keyframes brickFall {
+  0% { opacity: 0; transform: translateY(-46vh) scale(0.6); }
+  60% { opacity: 1; transform: translateY(6%) scale(1.05); }
+  80% { transform: translateY(-2%) scale(0.98); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.menu-subtitle {
+  margin: 0;
+  font-size: clamp(0.85rem, 2vw, 1.1rem);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--muted);
+  animation: fadeUp 0.5s ease-out 1.35s both;
+}
+
+.menu-list-cinematic { animation: fadeUp 0.5s ease-out 1.7s both; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* dopo la prima volta, il menu si mostra già assemblato: niente replay */
+#screen-menu.no-intro .brick,
+#screen-menu.no-intro .menu-subtitle,
+#screen-menu.no-intro .menu-list-cinematic,
+#screen-menu.no-intro .logo-flash {
+  animation: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
