@@ -11,6 +11,8 @@ public/            # tutto ciò che viene pubblicato come sito statico
   _headers          # header di sicurezza (CSP, nosniff, ...) per gli asset statici
   audio/
     bitwise-adventure.mp3  # musica di sottofondo
+  images/
+    bg.svg          # illustrazione di sfondo (tetramini + bagliori)
   src/
     engine.js       # logica di gioco pura (nessun DOM)
     render.js       # rendering su canvas
@@ -33,7 +35,7 @@ Il motore e la logica della classifica sono separati dal DOM/Cloudflare, quindi 
 - Punteggio: 100 / 300 / 500 / 800 per 1-4 linee × livello, +1 per cella di soft drop, +2 per cella di hard drop; +20% su tutti i punti se il ghost piece è disattivato in Impostazioni
 - Livello +1 ogni 10 linee, gravità con curva Tetris Guideline
 - Musica di sottofondo in loop a volume basso, mute e slider volume in Impostazioni (preferenze salvate in `localStorage`); parte al primo "Nuova partita" per rispettare le policy di autoplay del browser
-- Sfondo generato via CSS (gradienti + texture sottile), nessuna immagine da caricare; resta dietro pannelli e board, che restano opachi
+- Sfondo illustrato in SVG (`public/images/bg.svg`): sagome dei sette tetramini classici e bagliori sfumati sul tema scuro/viola; resta dietro pannelli e board, che restano opachi
 
 ## Menu e schermate
 

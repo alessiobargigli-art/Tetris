@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <defs>
+    <radialGradient id="glowA" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#b678ff" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#b678ff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowB" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#4fd1ff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#4fd1ff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowC" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#5b7cff" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#5b7cff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1600" height="900" fill="#0b0d1f"/>
+
+  <ellipse cx="240" cy="180" rx="520" ry="440" fill="url(#glowA)"/>
+  <ellipse cx="1380" cy="140" rx="460" ry="380" fill="url(#glowB)"/>
+  <ellipse cx="800" cy="960" rx="700" ry="520" fill="url(#glowC)"/>
+
+  <!-- I -->
+  <g transform="translate(100,90) rotate(-12)" opacity="0.16">
+    <rect x="0" y="0" width="34" height="34" rx="8" fill="#4fd1ff"/>
+    <rect x="38" y="0" width="34" height="34" rx="8" fill="#4fd1ff"/>
+    <rect x="76" y="0" width="34" height="34" rx="8" fill="#4fd1ff"/>
+    <rect x="114" y="0" width="34" height="34" rx="8" fill="#4fd1ff"/>
+  </g>
+
+  <!-- O -->
+  <g transform="translate(1380,130) rotate(8)" opacity="0.14">
+    <rect x="0" y="0" width="34" height="34" rx="8" fill="#ffd84f"/>
+    <rect x="38" y="0" width="34" height="34" rx="8" fill="#ffd84f"/>
+    <rect x="0" y="38" width="34" height="34" rx="8" fill="#ffd84f"/>
+    <rect x="38" y="38" width="34" height="34" rx="8" fill="#ffd84f"/>
+  </g>
+
+  <!-- T -->
+  <g transform="translate(220,650) rotate(18)" opacity="0.15">
+    <rect x="0" y="0" width="34" height="34" rx="8" fill="#b678ff"/>
+    <rect x="38" y="0" width="34" height="34" rx="8" fill="#b678ff"/>
+    <rect x="76" y="0" width="34" height="34" rx="8" fill="#b678ff"/>
+    <rect x="38" y="38" width="34" height="34" rx="8" fill="#b678ff"/>
+  </g>
+
+  <!-- S -->
+  <g transform="translate(1280,620) rotate(-14)" opacity="0.13">
+    <rect x="38" y="0" width="34" height="34" rx="8" fill="#5ee08a"/>
+    <rect x="76" y="0" width="34" height="34" rx="8" fill="#5ee08a"/>
+    <rect x="0" y="38" width="34" height="34" rx="8" fill="#5ee08a"/>
+    <rect x="38" y="38" width="34" height="34" rx="8" fill="#5ee08a"/>
+  </g>
+
+  <!-- Z -->
+  <g transform="translate(680,60) rotate(10)" opacity="0.14">
+    <rect x="0" y="0" width="34" height="34" rx="8" fill="#ff5d6c"/>
+    <rect x="38" y="0" width="34" height="34" rx="8" fill="#ff5d6c"/>
+    <rect x="38" y="38" width="34" height="34" rx="8" fill="#ff5d6c"/>
+    <rect x="76" y="38" width="34" height="34" rx="8" fill="#ff5d6c"/>
+  </g>
+
+  <!-- J -->
+  <g transform="translate(60,430) rotate(-8)" opacity="0.13">
+    <rect x="0" y="0" width="34" height="34" rx="8" fill="#5b7cff"/>
+    <rect x="0" y="38" width="34" height="34" rx="8" fill="#5b7cff"/>
+    <rect x="38" y="38" width="34" height="34" rx="8" fill="#5b7cff"/>
+    <rect x="76" y="38" width="34" height="34" rx="8" fill="#5b7cff"/>
+  </g>
+
+  <!-- L -->
+  <g transform="translate(1420,420) rotate(16)" opacity="0.15">
+    <rect x="76" y="0" width="34" height="34" rx="8" fill="#ff9a4d"/>
+    <rect x="0" y="38" width="34" height="34" rx="8" fill="#ff9a4d"/>
+    <rect x="38" y="38" width="34" height="34" rx="8" fill="#ff9a4d"/>
+    <rect x="76" y="38" width="34" height="34" rx="8" fill="#ff9a4d"/>
+  </g>
+
+  <!-- I (small) -->
+  <g transform="translate(860,760) rotate(-6) scale(0.8)" opacity="0.12">
+    <rect x="0" y="0" width="34" height="34" rx="8" fill="#4fd1ff"/>
+    <rect x="38" y="0" width="34" height="34" rx="8" fill="#4fd1ff"/>
+    <rect x="76" y="0" width="34" height="34" rx="8" fill="#4fd1ff"/>
+    <rect x="114" y="0" width="34" height="34" rx="8" fill="#4fd1ff"/>
+  </g>
+</svg>
